@@ -7,42 +7,51 @@ const skillCategories = [
   {
     title: "Programming Languages",
     icon: Code,
-    skills: ["C", "Python", "Java"],
+    skills: ["Java", "Python"],
   },
   {
-    title: "Web Technologies",
+    title: "Frontend",
     icon: Globe,
-    skills: ["HTML5", "CSS3", "Bootstrap", "JavaScript", "React", "AngularJS"],
+    skills: ["HTML5", "CSS3", "React.js", "AngularJS"],
   },
   {
     title: "Databases",
     icon: Database,
-    skills: ["SQLite", "MongoDB"],
+    skills: ["SQL"],
   },
   {
-    title: "Tools & Platforms",
+    title: "Tools",
     icon: Wrench,
-    skills: ["Git", "GitHub", "VS Code", "Canva"],
+    skills: ["GitHub", "VS Code", "Canva"],
   },
   {
-    title: "OS & Networking",
+    title: "Core Subjects",
     icon: Network,
-    skills: ["Unix", "Basics of Networking"],
+    skills: [
+      "OOP",
+      "DBMS",
+      "Operating Systems",
+      "Computer Networks",
+    ],
   },
 ];
 
 const certifications = [
   {
-    name: "MongoDB Intro",
-    issuer: "MongoDB Learning Path",
+    name: "Python 101 for Data Science",
+    issuer: "IBM Cognitive Class",
+  },
+  {
+    name: "Data Science & Analytics",
+    issuer: "HP LIFE",
   },
   {
     name: "Networking Basics",
     issuer: "Cisco Networking Academy",
   },
   {
-    name: "Python 101 for Data Science",
-    issuer: "IBM Cognitive Class",
+    name: "Introduction to MongoDB",
+    issuer: "MongoDB Learning Path",
   },
 ];
 
