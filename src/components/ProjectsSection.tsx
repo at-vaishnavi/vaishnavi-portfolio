@@ -6,23 +6,37 @@ import { Button } from "./ui/button";
 
 const projects = [
   {
-    title: "AutoNovaX",
-    objective: "Frontend-only e-commerce website for automobile parts built with React.",
-    techStack: ["React"],
-    github: "https://github.com/at-vaishnavi/AutoNovaX",
-    live: "" 
-  },
-  {
-    title: "CRUD Operations System",
-    objective: "Demonstrate database operations and CRUD functionality with Python",
-    techStack: ["Python", "SQLite"],
-    github: "https://github.com/at-vaishnavi/crud-operations",
+    title: "Swasthya AI - Intelligent Medical Chatbot",
+    objective: "An AI-powered medical chatbot that provides preliminary health guidance, multilingual symptom analysis, nearby hospital recommendations, medicine checking, prescription PDF generation, and emergency SOS alerts.",
+    techStack: [
+      "Python",
+      "Streamlit",
+      "NLP",
+      "Hugging Face Llama",
+      "SQLite",
+      "Twilio API"
+    ],
+    github: "https://github.com/at-vaishnavi/Swasthya-AI",
+    live: ""
   },
   {
     title: "ResearchHub - AngularJS Project",
     objective: "A web-based project to view and manage research publications with plagiarism detection and AI content highlighting.",
     techStack: ["AngularJS", "HTML", "CSS", "JavaScript"],
     github: "https://github.com/at-vaishnavi/ResearchHub",
+  },
+  {
+    title: "AutoNovaX",
+    objective: "Frontend-only e-commerce website for automobile parts built with React.",
+    techStack: ["React", "JavaScript", "CSS"],
+    github: "https://github.com/at-vaishnavi/AutoNovaX",
+    live: ""
+  },
+  {
+    title: "CRUD Operations System",
+    objective: "Demonstrate database operations and CRUD functionality with Python and SQLite.",
+    techStack: ["Python", "SQLite"],
+    github: "https://github.com/at-vaishnavi/crud-operations",
   }
 ];
 const ProjectsSection = () => {
