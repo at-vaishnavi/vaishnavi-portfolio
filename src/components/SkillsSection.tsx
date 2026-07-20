@@ -22,10 +22,10 @@ const skillCategories = [
   {
     title: "Tools",
     icon: Wrench,
-    skills: ["GitHub", "VS Code", "Canva"],
+    skills: ["GitHub", "VS Code", "Canva","Netlify"],
   },
   {
-    title: "Core Subjects",
+    title: "Core Fundamentals",
     icon: Network,
     skills: [
       "OOP",
