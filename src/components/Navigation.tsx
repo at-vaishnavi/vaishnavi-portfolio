@@ -61,7 +61,7 @@ const Navigation = () => {
           }}
           className="text-xl font-bold text-gradient"
         >
-          Vaishnavi.dev
+          Vaishnavi V
         </a>
 
         <div className="hidden md:flex items-center gap-8">
