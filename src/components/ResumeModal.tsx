@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Download, Mail } from "lucide-react";
@@ -10,6 +11,10 @@ interface ResumeModalProps {
   onClose: () => void;
 }
 
+const EMAILJS_SERVICE_ID = "service_pfoa3od";
+const EMAILJS_TEMPLATE_ID = "template_7fagk5a";
+const EMAILJS_PUBLIC_KEY = "YhY93F08kOdjlxCTtK1VDT";
+
 const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,25 +24,58 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate email capture
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    try {
+      const response = await fetch(
+        "https://api.emailjs.com/api/v1.0/email/send",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            service_id: EMAILJS_SERVICE_ID,
+            template_id: EMAILJS_TEMPLATE_ID,
+            user_id: EMAILJS_PUBLIC_KEY,
+            template_params: {
+              visitor_email: email.trim(),
+              request_time: new Date().toLocaleString(),
+            },
+          }),
+        }
+      );
 
-    // Trigger resume download
-    const link = document.createElement("a");
-    link.href = "/VAISHNAVI.pdf";
-    link.download = "Vaishnavi_V_Resume.pdf";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      if (!response.ok) {
+        throw new Error("Email notification could not be sent.");
+      }
 
-    toast({
-      title: "Resume downloading!",
-      description: "Thank you for your interest. The download should start shortly.",
-    });
+      // Start the resume download after EmailJS accepts the request.
+      const link = document.createElement("a");
+      link.href = "/VAISHNAVI.pdf";
+      link.download = "Vaishnavi_V_Resume.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    setEmail("");
-    setIsSubmitting(false);
-    onClose();
+      toast({
+        title: "Resume downloading!",
+        description:
+          "Your request was submitted successfully. The download should start shortly.",
+      });
+
+      setEmail("");
+      onClose();
+    } catch (error) {
+      console.error("Resume notification error:", error);
+
+      toast({
+        title: "Unable to process your request",
+        description:
+          "The notification could not be sent. Please try again in a moment.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -65,7 +103,9 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
             <div className="glass-panel p-8 mx-4">
               {/* Close button */}
               <button
+                type="button"
                 onClick={onClose}
+                aria-label="Close resume dialog"
                 className="absolute top-4 right-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               >
                 <X className="h-5 w-5" />
@@ -76,7 +116,11 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/20 flex items-center justify-center">
                   <Download className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-2xl font-semibold mb-2">Download Resume</h3>
+
+                <h3 className="text-2xl font-semibold mb-2">
+                  Download Resume
+                </h3>
+
                 <p className="text-muted-foreground">
                   Enter your email to download my resume and stay connected.
                 </p>
@@ -85,6 +129,7 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+
                   <Input
                     type="email"
                     placeholder="your.email@company.com"
