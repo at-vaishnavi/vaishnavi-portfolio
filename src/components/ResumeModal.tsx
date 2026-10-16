@@ -13,7 +13,7 @@ interface ResumeModalProps {
 
 const EMAILJS_SERVICE_ID = "service_pfoa3od";
 const EMAILJS_TEMPLATE_ID = "template_7fagk5a";
-const EMAILJS_PUBLIC_KEY = "YhY93F08kOdjlxCTtK1VDT";
+const EMAILJS_PUBLIC_KEY = "Hhxr6-tSX3oxEFft1";
 
 const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
   const [email, setEmail] = useState("");
