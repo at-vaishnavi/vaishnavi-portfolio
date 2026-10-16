@@ -45,7 +45,9 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
       );
 
       if (!response.ok) {
-        throw new Error("Email notification could not be sent.");
+        const errorDetails = await response.text();
+        console.error("EmailJS response:", response.status, errorDetails);
+        throw new Error(errorDetails || "Email notification could not be sent.")
       }
 
       // Start the resume download after EmailJS accepts the request.
