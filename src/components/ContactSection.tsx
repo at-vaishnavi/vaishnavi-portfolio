@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+
+import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Mail, Linkedin, Github, Send, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
@@ -17,22 +17,56 @@ const ContactSection = () => {
     email: "",
     message: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch(
+        "https://api.emailjs.com/api/v1.0/email/send",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            service_id: "service_pfoa3od",
+            template_id: "template_qbtku2b",
+            user_id: "Hhxr6-tSX3oxEFft1",
+            template_params: {
+              visitor_name: formData.name,
+              visitor_email: formData.email,
+              visitor_message: formData.message,
+            },
+          }),
+        }
+      );
 
-    toast({
-      title: "Message sent!",
-      description: "Thank you for reaching out. I'll get back to you soon.",
-    });
+      if (!response.ok) {
+        throw new Error("EmailJS could not send the message.");
+      }
 
-    setFormData({ name: "", email: "", message: "" });
-    setIsSubmitting(false);
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. I'll get back to you soon.",
+      });
+
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("Contact form error:", error);
+
+      toast({
+        title: "Message not sent",
+        description:
+          "Please try again or email me directly at atvaishnaviv@gmail.com.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const socialLinks = [
@@ -76,9 +110,11 @@ const ContactSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <h3 className="text-2xl font-semibold mb-6">Let's Connect</h3>
+
             <p className="text-muted-foreground mb-8 leading-relaxed">
-              I'm currently looking for new opportunities. Whether you have a question, 
-              a project idea, or just want to say hello, feel free to reach out!
+              I'm currently looking for new opportunities. Whether you have a
+              question, a project idea, or just want to say hello, feel free to
+              reach out!
             </p>
 
             <div className="space-y-4 mb-8">
@@ -97,7 +133,10 @@ const ContactSection = () => {
                   rel="noopener noreferrer"
                   initial={{ opacity: 0, x: -20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.3 + index * 0.1,
+                  }}
                   className="flex items-center gap-4 p-4 glass-panel-hover group"
                 >
                   <div className="p-3 rounded-xl bg-primary/20 group-hover:bg-primary/30 transition-colors">
@@ -105,7 +144,9 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="font-medium">{link.name}</p>
-                    <p className="text-sm text-muted-foreground">{link.label}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {link.label}
+                    </p>
                   </div>
                 </motion.a>
               ))}
@@ -118,7 +159,10 @@ const ContactSection = () => {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <form onSubmit={handleSubmit} className="glass-panel p-8 space-y-6">
+            <form
+              onSubmit={handleSubmit}
+              className="glass-panel p-8 space-y-6"
+            >
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
                   Name
@@ -154,7 +198,10 @@ const ContactSection = () => {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-2">
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium mb-2"
+                >
                   Message
                 </label>
                 <Textarea
