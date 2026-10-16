@@ -1,26 +1,26 @@
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Download, Mail } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
+import { Mail, Linkedin, Github, Send, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
-interface ResumeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const EMAILJS_SERVICE_ID = "service_pfoa3od";
-const EMAILJS_TEMPLATE_ID = "template_7fagk5a";
-const EMAILJS_PUBLIC_KEY = "Hhxr6-tSX3oxEFft1";
-
-const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const ContactSection = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -33,46 +33,35 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            service_id: EMAILJS_SERVICE_ID,
-            template_id: EMAILJS_TEMPLATE_ID,
-            user_id: EMAILJS_PUBLIC_KEY,
+            service_id: "service_pfoa3od",
+            template_id: "template_qbtku2b",
+            user_id: "Hhxr6-tSX3oxEFft1",
             template_params: {
-              visitor_email: email.trim(),
-              request_time: new Date().toLocaleString(),
+              visitor_name: formData.name,
+              visitor_email: formData.email,
+              visitor_message: formData.message,
             },
           }),
         }
       );
 
       if (!response.ok) {
-        const errorDetails = await response.text();
-        console.error("EmailJS response:", response.status, errorDetails);
-        throw new Error(errorDetails || "Email notification could not be sent.")
+        throw new Error("EmailJS could not send the message.");
       }
 
-      // Start the resume download after EmailJS accepts the request.
-      const link = document.createElement("a");
-      link.href = "/VAISHNAVI.pdf";
-      link.download = "Vaishnavi_V_Resume.pdf";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
       toast({
-        title: "Resume downloading!",
-        description:
-          "Your request was submitted successfully. The download should start shortly.",
+        title: "Message sent!",
+        description: "Thank you for reaching out. I'll get back to you soon.",
       });
 
-      setEmail("");
-      onClose();
+      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      console.error("Resume notification error:", error);
+      console.error("Contact form error:", error);
 
       toast({
-        title: "Unable to process your request",
+        title: "Message not sent",
         description:
-          "The notification could not be sent. Please try again in a moment.",
+          "Please try again or email me directly at atvaishnaviv@gmail.com.",
         variant: "destructive",
       });
     } finally {
@@ -80,95 +69,176 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
     }
   };
 
+  const socialLinks = [
+    {
+      name: "Email",
+      icon: Mail,
+      href: "mailto:atvaishnaviv@gmail.com",
+      label: "atvaishnaviv@gmail.com",
+    },
+    {
+      name: "LinkedIn",
+      icon: Linkedin,
+      href: "https://www.linkedin.com/in/at-vaishnavi1104",
+      label: "linkedin.com/in/at-vaishnavi1104",
+    },
+    {
+      name: "GitHub",
+      icon: Github,
+      href: "https://github.com/at-vaishnavi",
+      label: "github.com/at-vaishnavi",
+    },
+  ];
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-            onClick={onClose}
-          />
+    <section id="contact" className="py-24 px-6">
+      <div className="container mx-auto max-w-5xl" ref={ref}>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="section-heading text-center"
+        >
+          Get In Touch
+        </motion.h2>
 
-          {/* Modal */}
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Contact Info */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-50"
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="glass-panel p-8 mx-4">
-              {/* Close button */}
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close resume dialog"
-                className="absolute top-4 right-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
+            <h3 className="text-2xl font-semibold mb-6">Let's Connect</h3>
 
-              {/* Content */}
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/20 flex items-center justify-center">
-                  <Download className="h-8 w-8 text-primary" />
-                </div>
+            <p className="text-muted-foreground mb-8 leading-relaxed">
+              I'm currently looking for new opportunities. Whether you have a
+              question, a project idea, or just want to say hello, feel free to
+              reach out!
+            </p>
 
-                <h3 className="text-2xl font-semibold mb-2">
-                  Download Resume
-                </h3>
-
-                <p className="text-muted-foreground">
-                  Enter your email to download my resume and stay connected.
-                </p>
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-3 text-muted-foreground">
+                <MapPin className="h-5 w-5 text-primary" />
+                <span>Bengaluru, Karnataka, India</span>
               </div>
+            </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-
-                  <Input
-                    type="email"
-                    placeholder="your.email@company.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="pl-11 input-focus bg-background/50 border-border/50"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  variant="hero"
-                  size="lg"
-                  className="w-full"
-                  disabled={isSubmitting}
+            <div className="space-y-4">
+              {socialLinks.map((link, index) => (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  target={link.name !== "Email" ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.3 + index * 0.1,
+                  }}
+                  className="flex items-center gap-4 p-4 glass-panel-hover group"
                 >
-                  {isSubmitting ? (
-                    "Processing..."
-                  ) : (
-                    <>
-                      <Download className="mr-2 h-5 w-5" />
-                      Download Resume
-                    </>
-                  )}
-                </Button>
-              </form>
-
-              <p className="text-xs text-muted-foreground text-center mt-4">
-                Your email will only be used to track recruiter interest.
-              </p>
+                  <div className="p-3 rounded-xl bg-primary/20 group-hover:bg-primary/30 transition-colors">
+                    <link.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-medium">{link.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {link.label}
+                    </p>
+                  </div>
+                </motion.a>
+              ))}
             </div>
           </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <form
+              onSubmit={handleSubmit}
+              className="glass-panel p-8 space-y-6"
+            >
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  Name
+                </label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Your name"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  required
+                  className="input-focus bg-background/50 border-border/50"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-2">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="your.email@example.com"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  required
+                  className="input-focus bg-background/50 border-border/50"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium mb-2"
+                >
+                  Message
+                </label>
+                <Textarea
+                  id="message"
+                  placeholder="Your message..."
+                  value={formData.message}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
+                  required
+                  rows={5}
+                  className="input-focus bg-background/50 border-border/50 resize-none"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                variant="hero"
+                size="lg"
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  "Sending..."
+                ) : (
+                  <>
+                    <Send className="mr-2 h-5 w-5" />
+                    Send Message
+                  </>
+                )}
+              </Button>
+            </form>
+          </motion.div>
+        </div>
+      </div>
+    </section>
   );
 };
 
-export default ResumeModal;
+export default ContactSection;
