@@ -24,7 +24,7 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
 
     // Trigger resume download
     const link = document.createElement("a");
-    link.href = "/VAISHANVI.pdf";
+    link.href = "/VAISHNAVI.pdf";
     link.download = "Vaishnavi_V_Resume.pdf";
     document.body.appendChild(link);
     link.click();
